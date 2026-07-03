@@ -1,0 +1,6 @@
+{
+  "name": "Pinuccio Trattoria - Mercado de Belgrano",
+  "description": "Experiencia digital editorial para Pinuccio Trattoria y Pastificio en el Mercado de Belgrano, Buenos Aires. Pasta fresca artesanal, vino en jarra y verdadera tradición italiana.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

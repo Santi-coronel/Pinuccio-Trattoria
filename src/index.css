@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", "Bodoni Moda", "Playfair Display", Georgia, serif;
+  --font-display: "Bodoni Moda", "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Manrope", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-paper: #F8F5EE;
+  --color-paper-light: #FAF8F2;
+  --color-paper-dark: #EFEAE0;
+  --color-charcoal: #1C1A17;
+  --color-charcoal-muted: #4A4640;
+  --color-terracotta: #C24E2B;
+  --color-terracotta-dark: #9E3A1D;
+  --color-olive: #5B6343;
+  --color-olive-dark: #40462D;
+  --color-ochre: #C8832C;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-charcoal);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, .font-editorial {
+    font-family: var(--font-serif);
+  }
+
+  /* Paper grain overlay */
+  .paper-grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+  }
+
+  /* Print hairline borders */
+  .border-print {
+    border-color: rgba(28, 26, 23, 0.15);
+  }
+
+  /* Smooth olive oil motion transitions */
+  * {
+    border-color: rgba(28, 26, 23, 0.12);
+  }
+}
+
+/* Custom scrollbar for editorial feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F8F5EE;
+}
+::-webkit-scrollbar-thumb {
+  background: #C24E2B;
+  border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9E3A1D;
+}
