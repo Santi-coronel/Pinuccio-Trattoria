@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
 interface ImageWithFallbackProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
@@ -16,18 +16,10 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
 }) => {
   const [hasError, setHasError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     setHasError(false);
     setIsLoaded(false);
-    if (imgRef.current && imgRef.current.complete) {
-      if (imgRef.current.naturalWidth > 0) {
-        setIsLoaded(true);
-      } else {
-        setHasError(true);
-      }
-    }
   }, [src]);
 
   return (
@@ -39,12 +31,13 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
 
       {!hasError ? (
         <img
-          ref={imgRef}
           src={src}
           alt={alt}
           onLoad={() => setIsLoaded(true)}
           onError={() => setHasError(true)}
-          className="w-full h-full object-cover transition-opacity duration-300 ease-out relative z-10"
+          className={`w-full h-full object-cover transition-opacity duration-300 ease-out relative z-10 ${
+            isLoaded ? "opacity-100" : "opacity-0"
+          }`}
           {...props}
         />
       ) : (
