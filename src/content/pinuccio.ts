@@ -19,6 +19,12 @@ export interface PinuccioInfo {
     whatsapp: string;
     formattedPhone: string;
   };
+  images: {
+    hero: string;
+    manifesto: string;
+    mercado: string;
+    wine: string;
+  };
   manifesto: {
     headline: string;
     bodyParagraphs: string[];
@@ -49,6 +55,12 @@ export const PINUCCIO_DATA: PinuccioInfo = {
   contact: {
     whatsapp: "5491134567890",
     formattedPhone: "+54 9 11 3456-7890",
+  },
+  images: {
+    hero: "/images/hero.jpg",
+    manifesto: "/images/manifesto/masa.jpg",
+    mercado: "/images/gallery/mercado.jpg",
+    wine: "/images/gallery/wine.jpg",
   },
   manifesto: {
     headline: "No inventamos la pasta. Honramos el tiempo de la harina.",
