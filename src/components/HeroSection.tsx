@@ -17,10 +17,10 @@ const HEADLINE_LINES = [
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenReservation }) => {
   return (
-    <section className="relative min-h-[92vh] pt-32 pb-14 flex flex-col justify-between overflow-hidden">
+    <section className="relative min-h-[92vh] pt-32 pb-14 flex flex-col overflow-x-clip">
       <div className="absolute inset-0 paper-grain pointer-events-none z-10" />
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center my-auto z-20">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center flex-1 content-start lg:content-center z-20">
         {/* Columna editorial */}
         <div className="lg:col-span-7 flex flex-col justify-center">
           {/* Eyebrow con locación (sin emoji) */}
