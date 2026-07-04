@@ -2,93 +2,109 @@ import React from "react";
 import { motion } from "motion/react";
 import { PINUCCIO_DATA } from "../content/pinuccio";
 import { ImageWithFallback } from "./ImageWithFallback";
-import { fadeInSlow, oliveOilEase } from "../lib/animations";
+import { Reveal, TextReveal, AnimatedCounter } from "./motionPrimitives";
+import { oliveOilEase } from "../lib/animations";
+
+const STATS: { value: number; suffix: string; label: string; plain?: boolean }[] = [
+  { value: 1889, suffix: "", label: "El mercado, desde", plain: true },
+  { value: 8, suffix: "hs", label: "Braceado del ragù" },
+  { value: 24, suffix: "meses", label: "Curado del Parmigiano" },
+  { value: 100, suffix: "%", label: "Pasta hecha a mano" },
+];
 
 export const ManifestoSection: React.FC = () => {
   const { manifesto } = PINUCCIO_DATA;
 
   return (
-    <section id="manifesto" className="py-24 border-b border-[#1C1A17]/15 relative bg-[#FAF8F2]">
-      {/* Paper texture overlay */}
+    <section id="manifesto" className="relative bg-paper-2 py-24 sm:py-28 border-t border-ink/10">
       <div className="absolute inset-0 paper-grain pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 relative z-10">
-        {/* Section Label */}
-        <div className="flex items-center gap-3 font-mono text-xs tracking-widest uppercase text-[#5B6343] mb-12">
-          <span className="w-8 h-[1px] bg-[#5B6343]" />
-          <span>El Manifiesto de Pinuccio</span>
-        </div>
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10">
+        <span className="eyebrow rule-tick text-olive">El manifiesto de Pinuccio</span>
 
-        {/* Broken Editorial Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          
-          {/* Column Left: High-impact Headline & Story Paragraphs */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeInSlow}
-            className="lg:col-span-7 space-y-8"
-          >
-            <h2 className="font-editorial text-4xl sm:text-5xl lg:text-6xl font-bold text-[#1C1A17] leading-[1.05] tracking-tight">
-              {manifesto.headline}
-            </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start mt-8">
+          {/* Historia */}
+          <div className="lg:col-span-7">
+            <TextReveal
+              as="h2"
+              text={manifesto.headline}
+              className="font-display text-3xl sm:text-5xl lg:text-[3.4rem] font-semibold text-ink leading-[1.04] tracking-[-0.02em] max-w-[18ch]"
+            />
 
-            <div className="space-y-6 text-base sm:text-lg text-[#1C1A17]/85 max-w-[55ch] font-sans leading-relaxed">
+            <div className="space-y-6 text-base sm:text-lg text-ink-soft leading-relaxed max-w-[58ch] mt-8">
               {manifesto.bodyParagraphs.map((paragraph, idx) => (
-                <p key={idx} className="first-letter:text-4xl first-letter:font-serif first-letter:float-left first-letter:mr-3 first-letter:text-[#C24E2B] first-letter:font-bold">
-                  {paragraph}
-                </p>
+                <Reveal key={idx} delay={idx * 0.05}>
+                  <p
+                    className={
+                      idx === 0
+                        ? "first-letter:font-display first-letter:text-6xl first-letter:font-semibold first-letter:text-terracotta first-letter:float-left first-letter:mr-3 first-letter:leading-[0.8] first-letter:mt-1"
+                        : ""
+                    }
+                  >
+                    {paragraph}
+                  </p>
+                </Reveal>
               ))}
             </div>
+          </div>
 
-            {/* Handcrafted Quote Box */}
-            <div className="mt-10 p-8 border-l-2 border-[#C24E2B] bg-[#EFEAE0]/80 relative">
-              <p className="font-serif italic text-xl sm:text-2xl text-[#1C1A17] leading-snug mb-4">
-                "{manifesto.quote.text}"
-              </p>
-              <span className="font-mono text-xs tracking-widest uppercase text-[#5B6343] block">
-                — {manifesto.quote.author}
-              </span>
-            </div>
-          </motion.div>
-
-          {/* Column Right: Overlapping Editorial Photography */}
+          {/* Imagen del amasado */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 1.3, ease: oliveOilEase }}
-            className="lg:col-span-5 relative mt-6 lg:mt-12"
+            transition={{ duration: 1.2, ease: oliveOilEase }}
+            className="lg:col-span-5 relative lg:mt-4"
           >
-            {/* Primary Overlapping Photo */}
-            <div className="relative p-2 bg-[#EFEAE0] border border-[#1C1A17]/20 shadow-md">
-              <ImageWithFallback
-                src="/images/manifesto/masa.jpg"
-                alt="Manos amasando la pasta en Pinuccio"
-                aspectRatioClass="aspect-[4/5]"
-                className="w-full h-full object-cover"
-              />
-
-              {/* Caption Tag */}
-              <div className="mt-3 p-3 bg-[#1C1A17] text-[#F8F5EE] text-left">
-                <span className="font-mono text-[10px] tracking-widest uppercase text-[#C24E2B] block">
-                  Cultura de la Masa
-                </span>
-                <span className="font-serif italic text-sm text-[#F8F5EE]/90 block mt-0.5">
-                  Amasado diario a la vista en el Puesto 23 del Mercado de Belgrano.
-                </span>
-              </div>
-            </div>
-
-            {/* Accent Stamp Decorative Element */}
-            <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full border border-[#C24E2B]/40 flex items-center justify-center p-2 text-center pointer-events-none hidden sm:flex">
-              <span className="font-serif italic text-xs text-[#C24E2B] uppercase tracking-wider leading-tight">
-                Farina & Uova 100%
+            <ImageWithFallback
+              src={PINUCCIO_DATA.images.manifesto}
+              alt="Manos amasando la pasta fresca en Pinuccio"
+              aspectRatioClass="aspect-[4/5]"
+              className="shadow-[0_28px_56px_-30px_rgba(33,30,26,0.5)]"
+              imgClassName="hover:scale-[1.03] transition-transform duration-[1200ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+              loading="lazy"
+            />
+            <div className="mt-3 flex items-baseline justify-between gap-4">
+              <span className="eyebrow text-olive">Cultura de la masa</span>
+              <span className="font-serif italic text-sm text-ink-soft text-right max-w-[26ch]">
+                Amasado diario a la vista, en el Puesto 23.
               </span>
             </div>
           </motion.div>
+        </div>
 
+        {/* Pull-quote */}
+        <Reveal className="max-w-4xl mx-auto text-center mt-20 sm:mt-24">
+          <p className="font-serif italic text-2xl sm:text-3xl lg:text-4xl text-ink leading-snug">
+            “{manifesto.quote.text}”
+          </p>
+          <span className="eyebrow text-terracotta block mt-6">— {manifesto.quote.author}</span>
+        </Reveal>
+
+        {/* Franja de datos con contadores */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-10 mt-20 sm:mt-24 border-t border-ink/12 pt-12">
+          {STATS.map((stat, idx) => (
+            <Reveal
+              key={idx}
+              delay={idx * 0.08}
+              className={`text-center px-4 ${idx < STATS.length - 1 ? "lg:border-r border-ink/12" : ""}`}
+            >
+              <span className="font-display text-4xl sm:text-5xl font-semibold text-ink tabular-nums inline-flex items-baseline gap-1">
+                <AnimatedCounter
+                  value={stat.value}
+                  format={
+                    stat.plain
+                      ? (v) => Math.round(v).toString()
+                      : undefined
+                  }
+                />
+                {stat.suffix && (
+                  <span className="text-2xl sm:text-3xl text-terracotta">{stat.suffix}</span>
+                )}
+              </span>
+              <span className="eyebrow block text-ink-faint mt-3">{stat.label}</span>
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>
