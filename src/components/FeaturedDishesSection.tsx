@@ -2,19 +2,143 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { MENU_ITEMS, MenuItem } from "../content/menu";
 import { ImageWithFallback } from "./ImageWithFallback";
-import { oliveOilEase } from "../lib/animations";
-import { Wine, Info, X, MessageCircle } from "lucide-react";
+import { Reveal } from "./motionPrimitives";
+import { Wine, Plus, X, ArrowUpRight } from "lucide-react";
 
 interface FeaturedDishesProps {
   onSelectDishForReservation: (dishName: string) => void;
 }
 
+type Category = "all" | "paste" | "antipasti" | "dolci" | "bevande";
+
+const CATEGORIES: { id: Category; label: string }[] = [
+  { id: "all", label: "Toda la carta" },
+  { id: "paste", label: "Paste Fresche" },
+  { id: "antipasti", label: "Antipasti" },
+  { id: "dolci", label: "Dolci" },
+  { id: "bevande", label: "Vini & Bevande" },
+];
+
+const cardEase = "cubic-bezier(0.23,1,0.32,1)";
+
+// ---------------------------------------------------------------------------
+// Dish card — técnica cutout-card (scale on hover, overlay, reveal action)
+// ---------------------------------------------------------------------------
+interface DishCardProps {
+  dish: MenuItem;
+  featured?: boolean;
+  flip?: boolean;
+  onOpen: () => void;
+  onReserve: () => void;
+}
+
+const DishCard: React.FC<DishCardProps> = ({ dish, featured, flip, onOpen, onReserve }) => {
+  const Media = (
+    <div
+      className={`relative overflow-hidden cursor-pointer ${
+        featured ? "aspect-[4/3] md:aspect-auto md:h-full md:min-h-[24rem]" : "aspect-[4/3]"
+      }`}
+      onClick={onOpen}
+    >
+      <ImageWithFallback
+        src={dish.image}
+        alt={dish.name}
+        aspectRatioClass="h-full w-full"
+        imgClassName="transition-transform duration-[900ms] group-hover:scale-[1.06]"
+        imgStyle={{ transitionTimingFunction: cardEase }}
+        loading="lazy"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/5 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-500 pointer-events-none" />
+
+      {dish.highlighted && (
+        <span className="absolute top-4 left-4 bg-terracotta text-paper text-[10px] font-mono tracking-[0.18em] uppercase px-3 py-1">
+          Insignia del mercado
+        </span>
+      )}
+
+      <span className="absolute top-4 right-4 bg-paper/95 text-ink font-mono text-sm font-medium px-3 py-1 shadow-sm">
+        {dish.price}
+      </span>
+
+      {/* Reveal action on hover */}
+      <div className="absolute inset-x-4 bottom-4 flex translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onReserve();
+          }}
+          className="w-full bg-paper text-ink hover:bg-terracotta hover:text-paper transition-colors py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase inline-flex items-center justify-center gap-2"
+        >
+          Reservar este plato
+          <ArrowUpRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    </div>
+  );
+
+  const Body = (
+    <div className={`flex flex-col gap-3 ${featured ? "p-8 sm:p-10 justify-center" : "p-6 flex-1"}`}>
+      <div>
+        <span className="eyebrow block text-ink-faint">{dish.italianName}</span>
+        <h3
+          className={`font-serif font-semibold text-ink mt-1 leading-tight ${
+            featured ? "text-3xl sm:text-4xl" : "text-2xl"
+          }`}
+        >
+          {dish.name}
+        </h3>
+      </div>
+
+      <p className={`text-ink-soft leading-relaxed ${featured ? "text-base max-w-[46ch]" : "text-sm"}`}>
+        {dish.description}
+      </p>
+
+      <div className="mt-auto pt-4 border-t border-ink/10 flex flex-col gap-3">
+        <div className="flex items-start gap-2.5 text-xs text-ink-soft">
+          <Wine className="w-4 h-4 text-terracotta shrink-0 mt-0.5" />
+          <span>
+            <span className="eyebrow block text-olive mb-0.5">Maridaje sugerido</span>
+            {dish.pairing}
+          </span>
+        </div>
+
+        <button
+          onClick={onOpen}
+          className="self-start inline-flex items-center gap-1.5 font-mono text-[11px] tracking-[0.16em] uppercase text-ink hover:text-terracotta transition-colors"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          Ingredientes y detalle
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <article
+      className={`group relative bg-cream border border-ink/12 hover:border-terracotta/50 transition-[border-color,box-shadow] duration-500 hover:shadow-[0_28px_56px_-30px_rgba(33,30,26,0.5)] ${
+        featured ? "md:col-span-2 md:grid md:grid-cols-2 flex flex-col" : "flex flex-col"
+      }`}
+    >
+      {featured && flip ? (
+        <>
+          <div className="md:order-2">{Media}</div>
+          <div className="md:order-1">{Body}</div>
+        </>
+      ) : (
+        <>
+          {Media}
+          {Body}
+        </>
+      )}
+    </article>
+  );
+};
+
+// ---------------------------------------------------------------------------
 export const FeaturedDishesSection: React.FC<FeaturedDishesProps> = ({
   onSelectDishForReservation,
 }) => {
-  const [activeCategory, setActiveCategory] = useState<
-    "all" | "paste" | "antipasti" | "dolci" | "bevande"
-  >("all");
+  const [activeCategory, setActiveCategory] = useState<Category>("all");
   const [selectedDish, setSelectedDish] = useState<MenuItem | null>(null);
 
   const filteredDishes =
@@ -22,225 +146,178 @@ export const FeaturedDishesSection: React.FC<FeaturedDishesProps> = ({
       ? MENU_ITEMS
       : MENU_ITEMS.filter((item) => item.category === activeCategory);
 
+  let featuredCount = 0;
+
   return (
-    <section id="menu" className="py-24 border-b border-[#1C1A17]/15 relative bg-[#F8F5EE]">
+    <section id="menu" className="py-24 sm:py-28 relative bg-paper border-t border-ink/10">
       <div className="absolute inset-0 paper-grain pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 sm:px-10 relative z-10">
-        
-        {/* Header Title */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-          <div>
-            <div className="flex items-center gap-3 font-mono text-xs tracking-widest uppercase text-[#5B6343] mb-3">
-              <span className="w-8 h-[1px] bg-[#5B6343]" />
-              <span>La Carta del Puesto 23</span>
-            </div>
-            <h2 className="font-editorial text-4xl sm:text-6xl font-bold text-[#1C1A17] tracking-tight">
-              Especialidades del Día
-            </h2>
+        {/* Header asimétrico */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end mb-12">
+          <div className="lg:col-span-8">
+            <span className="eyebrow rule-tick text-olive">La carta del Puesto 23</span>
+            <Reveal>
+              <h2 className="font-display text-4xl sm:text-6xl font-semibold text-ink tracking-[-0.02em] mt-4 leading-[1]">
+                Especialidades del día
+              </h2>
+            </Reveal>
           </div>
-
-          <p className="text-sm font-sans text-[#1C1A17]/70 max-w-[45ch]">
-            Cada mañana elaboramos la masa fresca en la barra. Cambiamos la carta según la estacionalidad de las verduras del mercado.
+          <p className="lg:col-span-4 text-sm text-ink-soft leading-relaxed">
+            Cada mañana elaboramos la masa fresca en la barra. La carta cambia según la
+            estacionalidad de las verduras del mercado.
           </p>
         </div>
 
-        {/* Category Filter Tabs */}
-        <div className="flex flex-wrap items-center gap-2 sm:gap-4 pb-6 mb-12 border-b border-[#1C1A17]/15 font-mono text-xs tracking-widest uppercase">
-          {[
-            { id: "all", label: "Toda la Carta" },
-            { id: "paste", label: "Paste Fresche" },
-            { id: "antipasti", label: "Antipasti" },
-            { id: "dolci", label: "Dolci" },
-            { id: "bevande", label: "Vini & Bevande" },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveCategory(tab.id as any)}
-              className={`px-4 py-2 border transition-all ${
-                activeCategory === tab.id
-                  ? "bg-[#1C1A17] text-[#F8F5EE] border-[#1C1A17]"
-                  : "bg-transparent text-[#1C1A17]/70 border-[#1C1A17]/20 hover:border-[#C24E2B] hover:text-[#C24E2B]"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Dish List */}
-        <div className="space-y-16">
-          {filteredDishes.map((dish, index) => {
-            const isEven = index % 2 === 0;
-
+        {/* Tabs con bubble animado */}
+        <div className="flex flex-wrap gap-1.5 mb-14 border-y border-ink/10 py-4">
+          {CATEGORIES.map((cat) => {
+            const active = activeCategory === cat.id;
             return (
-              <motion.div
-                key={dish.id}
-                initial={{ opacity: 0, y: 25 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 1.0, ease: oliveOilEase }}
-                className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center p-6 sm:p-8 bg-[#FAF8F2] border border-[#1C1A17]/15 shadow-sm hover:border-[#C24E2B]/50 transition-colors ${
-                  isEven ? "" : "lg:flex-row-reverse"
-                }`}
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className="relative px-4 py-2 font-mono text-[11px] tracking-[0.16em] uppercase transition-colors"
               >
-                {/* Image Composition */}
-                <div
-                  className={`lg:col-span-5 ${
-                    isEven ? "lg:order-1" : "lg:order-2"
+                {active && (
+                  <motion.span
+                    layoutId="menu-tab"
+                    className="absolute inset-0 bg-ink"
+                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                  />
+                )}
+                <span
+                  className={`relative z-10 ${
+                    active ? "text-paper" : "text-ink/55 hover:text-terracotta"
                   }`}
                 >
-                  <div
-                    className="relative p-2 bg-[#EFEAE0] border border-[#1C1A17]/20 group cursor-pointer"
-                    onClick={() => setSelectedDish(dish)}
-                  >
-                    <ImageWithFallback
-                      src={dish.image}
-                      alt={dish.name}
-                      aspectRatioClass="aspect-[4/3]"
-                      className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700"
-                    />
-
-                    {dish.highlighted && (
-                      <span className="absolute top-4 left-4 bg-[#C24E2B] text-[#F8F5EE] text-[10px] font-mono tracking-widest uppercase px-3 py-1 border border-[#C24E2B]">
-                        Insignia del Mercado
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Text & Dish Details */}
-                <div
-                  className={`lg:col-span-7 space-y-5 ${
-                    isEven ? "lg:order-2" : "lg:order-1"
-                  }`}
-                >
-                  <div className="border-b border-[#1C1A17]/10 pb-3">
-                    <span className="text-[11px] font-mono tracking-widest uppercase text-[#5B6343] block">
-                      {dish.italianName}
-                    </span>
-                    <h3 className="font-editorial text-3xl sm:text-4xl font-bold text-[#1C1A17] mt-0.5">
-                      {dish.name}
-                    </h3>
-                  </div>
-
-                  <p className="text-base text-[#1C1A17]/85 font-sans leading-relaxed max-w-[55ch]">
-                    {dish.description}
-                  </p>
-
-                  {/* Wine Pairing Ribbon */}
-                  <div className="p-3 bg-[#EFEAE0] border border-[#1C1A17]/10 flex items-center gap-3 text-xs text-[#1C1A17]">
-                    <Wine className="w-4 h-4 text-[#C24E2B] shrink-0" />
-                    <div>
-                      <span className="font-mono text-[10px] uppercase text-[#5B6343] block">
-                        Maridaje Sugerido por Pinuccio
-                      </span>
-                      <span className="font-medium">{dish.pairing}</span>
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="pt-2 flex flex-wrap items-center gap-4 font-mono text-xs tracking-widest uppercase">
-                    <button
-                      onClick={() => setSelectedDish(dish)}
-                      className="text-[#1C1A17] hover:text-[#C24E2B] flex items-center gap-1.5 underline underline-offset-4 transition-colors"
-                    >
-                      <Info className="w-3.5 h-3.5" />
-                      <span>Ver Ingredientes Completos</span>
-                    </button>
-
-                    <button
-                      onClick={() => onSelectDishForReservation(dish.name)}
-                      className="bg-[#25D366] text-white px-4 py-2 hover:bg-[#1ebd59] transition-colors flex items-center gap-2 border border-[#25D366]"
-                    >
-                      <MessageCircle className="w-3.5 h-3.5 fill-white" />
-                      <span>Reservar por WhatsApp</span>
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
+                  {cat.label}
+                </span>
+              </button>
             );
           })}
         </div>
+
+        {/* Grid de platos */}
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          <AnimatePresence mode="popLayout">
+            {filteredDishes.map((dish) => {
+              const isFeatured = !!dish.highlighted;
+              const flip = isFeatured && featuredCount++ % 2 === 1;
+              return (
+                <motion.div
+                  key={dish.id}
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.97 }}
+                  transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+                  className={isFeatured ? "md:col-span-2" : ""}
+                >
+                  <DishCard
+                    dish={dish}
+                    featured={isFeatured}
+                    flip={flip}
+                    onOpen={() => setSelectedDish(dish)}
+                    onReserve={() => onSelectDishForReservation(dish.name)}
+                  />
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </motion.div>
       </div>
 
-      {/* Dish Ingredient & Story Modal */}
+      {/* Modal de ingredientes */}
       <AnimatePresence>
         {selectedDish && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#1C1A17]/70 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-ink/70 backdrop-blur-sm"
+            onClick={() => setSelectedDish(null)}
+          >
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              className="bg-[#F8F5EE] border border-[#1C1A17] max-w-2xl w-full p-6 sm:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto paper-grain"
+              initial={{ opacity: 0, scale: 0.96, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 12 }}
+              transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-paper border border-ink max-w-2xl w-full relative shadow-2xl max-h-[90vh] overflow-y-auto"
             >
               <button
                 onClick={() => setSelectedDish(null)}
-                className="absolute top-6 right-6 p-2 border border-[#1C1A17]/20 hover:border-[#C24E2B] hover:text-[#C24E2B] transition-colors text-[#1C1A17]"
+                className="absolute top-4 right-4 z-10 p-2 bg-paper/90 border border-ink/20 hover:border-terracotta hover:text-terracotta transition-colors text-ink"
+                aria-label="Cerrar"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="mb-6">
-                <span className="text-xs font-mono tracking-widest uppercase text-[#5B6343] block mb-1">
-                  {selectedDish.italianName}
-                </span>
-                <h3 className="font-editorial text-3xl sm:text-4xl font-bold text-[#1C1A17]">
-                  {selectedDish.name}
-                </h3>
-              </div>
-
-              <div className="mb-6 rounded-none overflow-hidden border border-[#1C1A17]/15">
+              <div className="relative aspect-[16/9] overflow-hidden">
                 <ImageWithFallback
                   src={selectedDish.image}
                   alt={selectedDish.name}
-                  aspectRatioClass="aspect-[16/9]"
-                  className="w-full h-full object-cover"
+                  aspectRatioClass="h-full w-full"
+                  className="h-full w-full"
                 />
-              </div>
-
-              <p className="text-base text-[#1C1A17]/85 font-sans leading-relaxed mb-6">
-                {selectedDish.description}
-              </p>
-
-              {/* Ingredients List */}
-              <div className="mb-6 p-4 bg-[#EFEAE0] border border-[#1C1A17]/10">
-                <h4 className="font-mono text-xs uppercase tracking-widest text-[#5B6343] mb-3 font-semibold">
-                  Materia Prima e Ingredientes
-                </h4>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-sans text-[#1C1A17]">
-                  {selectedDish.ingredients.map((ing, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-[#C24E2B]" />
-                      <span>{ing}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {selectedDish.notes && (
-                <div className="mb-6 p-3 border-l-2 border-[#5B6343] text-xs text-[#1C1A17]/80 font-sans italic bg-[#5B6343]/5">
-                  Nota del Chef: {selectedDish.notes}
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
+                <div className="absolute bottom-5 left-6 right-6">
+                  <span className="eyebrow block text-paper/80">{selectedDish.italianName}</span>
+                  <h3 className="font-serif text-3xl sm:text-4xl font-semibold text-paper mt-1 leading-tight">
+                    {selectedDish.name}
+                  </h3>
                 </div>
-              )}
+                <span className="absolute top-5 left-6 bg-paper text-ink font-mono text-sm px-3 py-1">
+                  {selectedDish.price}
+                </span>
+              </div>
 
-              {/* Action */}
-              <div className="flex justify-end gap-4 pt-4 border-t border-[#1C1A17]/15 font-mono text-xs uppercase tracking-widest">
+              <div className="p-6 sm:p-8">
+                <p className="text-base text-ink-soft leading-relaxed mb-6">
+                  {selectedDish.description}
+                </p>
+
+                <div className="mb-6">
+                  <h4 className="eyebrow text-olive mb-3">Materia prima e ingredientes</h4>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-ink">
+                    {selectedDish.ingredients.map((ing, i) => (
+                      <li key={i} className="flex items-center gap-2.5">
+                        <span className="w-1.5 h-1.5 bg-terracotta shrink-0" />
+                        <span>{ing}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="mb-6 p-4 bg-paper-2 border-l-2 border-terracotta flex items-start gap-3">
+                  <Wine className="w-4 h-4 text-terracotta shrink-0 mt-0.5" />
+                  <span className="text-sm text-ink">
+                    <span className="eyebrow block text-olive mb-0.5">Maridaje de Pinuccio</span>
+                    {selectedDish.pairing}
+                  </span>
+                </div>
+
+                {selectedDish.notes && (
+                  <p className="mb-6 text-sm text-ink-soft italic font-serif text-lg leading-snug border-l-2 border-olive pl-4">
+                    {selectedDish.notes}
+                  </p>
+                )}
+
                 <button
                   onClick={() => {
-                    const dishName = selectedDish.name;
+                    const name = selectedDish.name;
                     setSelectedDish(null);
-                    onSelectDishForReservation(dishName);
+                    onSelectDishForReservation(name);
                   }}
-                  className="w-full bg-[#25D366] text-white py-3 hover:bg-[#1ebd59] transition-colors flex items-center justify-center gap-2 font-bold"
+                  className="w-full bg-terracotta text-paper py-3.5 hover:bg-terracotta-dark transition-colors font-mono text-xs tracking-[0.18em] uppercase inline-flex items-center justify-center gap-2"
                 >
-                  <MessageCircle className="w-4 h-4 fill-white" />
-                  <span>Reservar por WhatsApp para probar este plato</span>
+                  Reservar por WhatsApp para probar este plato
+                  <ArrowUpRight className="w-4 h-4" />
                 </button>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </section>
