@@ -99,7 +99,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenReservation }) =
         >
           <div className="relative">
             <ImageWithFallback
-              src="/images/hero.jpg"
+              src="/images/hero.webp"
               alt="Pasta fresca recién amasada humeando en Pinuccio"
               aspectRatioClass="aspect-[4/5]"
               className="w-full shadow-[0_30px_60px_-24px_rgba(33,30,26,0.45)]"

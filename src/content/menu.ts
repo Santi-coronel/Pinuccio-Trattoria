@@ -23,7 +23,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ingredients: ["Sémola de trigo candeal", "Yema de huevo de campo", "Osobuco braceado 8hs", "Tomate San Marzano", "Vino Malbec", "Parmigiano Reggiano 24 meses"],
     pairing: "Malbec de Paraje Altamira en jarra de vidrio",
     highlighted: true,
-    image: "/images/menu/tagliatelle.jpg",
+    image: "/images/menu/tagliatelle.webp",
     notes: "Plato insignia de Pinuccio. Se sugiere pedir pan de masa madre extra para hacer scarpetta.",
   },
   {
@@ -36,7 +36,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ingredients: ["Masa fina de huevo", "Zapallo cabutia asado", "Amaretti artesanal", "Manteca de campo", "Salvia fresca", "Queso Pecorino romano"],
     pairing: "Chardonnay del Valle de Uco con paso por madera",
     highlighted: true,
-    image: "/images/menu/ravioli.jpg",
+    image: "/images/menu/ravioli.webp",
     notes: "Receta tradicional de Mantova adaptada con zapallos locales de la huerta del mercado.",
   },
   {
@@ -49,7 +49,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ingredients: ["Papa Spunta seleccionada", "Harina 0000", "Pomodoro pelati", "Stracciatella de crema de leche", "Albahaca genovesa", "Aceite de oliva virgen extra"],
     pairing: "Sangiovese joven servido fresco",
     highlighted: false,
-    image: "/images/hero.jpg",
+    image: "/images/hero.webp",
   },
   {
     id: "cacio-e-pepe",
@@ -61,7 +61,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ingredients: ["Tonnarelli frescos", "Pecorino Romano D.O.P.", "Pimienta negra en grano tostada", "Emulsión de almidón natural"],
     pairing: "Pinot Noir patagónico",
     highlighted: false,
-    image: "/images/menu/tagliatelle.jpg",
+    image: "/images/menu/tagliatelle.webp",
   },
   {
     id: "burrata-mercado",
@@ -73,7 +73,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ingredients: ["Burrata de masa hilada", "Tomates confitados", "Pesto genovés de almendras", "Focaccia de romero y sal marina"],
     pairing: "Aperol Spritz clásico con rodaja de naranja",
     highlighted: false,
-    image: "/images/gallery/wine.jpg",
+    image: "/images/gallery/wine.webp",
   },
   {
     id: "tiramisu-classico",
@@ -85,7 +85,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ingredients: ["Savoiardi artesanales", "Mascarpone fresco", "Café espresso de especialidad", "Vino Marsala italiano", "Cacao amargo puro"],
     pairing: "Espresso ristretto o copa de Grappa italiana",
     highlighted: true,
-    image: "/images/menu/tiramisu.jpg",
+    image: "/images/menu/tiramisu.webp",
   },
   {
     id: "cannoli-siciliani",
@@ -97,7 +97,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ingredients: ["Masa crocante de cannolo", "Ricotta de oveja cremosa", "Cascaritas de naranja glaseadas", "Pistachos tostados picados"],
     pairing: "Limoncello casero bien frío",
     highlighted: false,
-    image: "/images/menu/tiramisu.jpg",
+    image: "/images/menu/tiramisu.webp",
   },
   {
     id: "vino-jarra",
@@ -109,6 +109,6 @@ export const MENU_ITEMS: MenuItem[] = [
     ingredients: ["Malbec / Cabernet Sauvignon sin filtrar"],
     pairing: "Cualquier plato de pasta con estofado o crema",
     highlighted: false,
-    image: "/images/gallery/wine.jpg",
+    image: "/images/gallery/wine.webp",
   }
 ];

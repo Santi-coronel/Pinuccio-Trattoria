@@ -6,12 +6,12 @@ import { Reveal, TextReveal } from "./motionPrimitives";
 import { ArrowUpRight, MapPin } from "lucide-react";
 
 const GALLERY = [
-  { src: "/images/gallery/mercado.jpg", label: "El Mercado de Belgrano", meta: "Pasillo central, 1889" },
-  { src: "/images/manifesto/masa.jpg", label: "Amasado a la vista", meta: "Cada mañana en la barra" },
-  { src: "/images/menu/tagliatelle.jpg", label: "Tagliatelle al ragù", meta: "Osobuco, 8 horas" },
-  { src: "/images/gallery/wine.jpg", label: "Vino en jarra", meta: "Pequeños productores" },
-  { src: "/images/menu/ravioli.jpg", label: "Ravioli di zucca", meta: "Receta de Mantova" },
-  { src: "/images/menu/tiramisu.jpg", label: "Tiramisù della casa", meta: "Mascarpone y Marsala" },
+  { src: "/images/gallery/mercado.webp", label: "El Mercado de Belgrano", meta: "Pasillo central, 1889" },
+  { src: "/images/manifesto/masa.webp", label: "Amasado a la vista", meta: "Cada mañana en la barra" },
+  { src: "/images/menu/tagliatelle.webp", label: "Tagliatelle al ragù", meta: "Osobuco, 8 horas" },
+  { src: "/images/gallery/wine.webp", label: "Vino en jarra", meta: "Pequeños productores" },
+  { src: "/images/menu/ravioli.webp", label: "Ravioli di zucca", meta: "Receta de Mantova" },
+  { src: "/images/menu/tiramisu.webp", label: "Tiramisù della casa", meta: "Mascarpone y Marsala" },
 ];
 
 export const MarketAtmosphereSection: React.FC = () => {

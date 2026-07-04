@@ -57,10 +57,10 @@ export const PINUCCIO_DATA: PinuccioInfo = {
     formattedPhone: "+54 9 11 3456-7890",
   },
   images: {
-    hero: "/images/hero.jpg",
-    manifesto: "/images/manifesto/masa.jpg",
-    mercado: "/images/gallery/mercado.jpg",
-    wine: "/images/gallery/wine.jpg",
+    hero: "/images/hero.webp",
+    manifesto: "/images/manifesto/masa.webp",
+    mercado: "/images/gallery/mercado.webp",
+    wine: "/images/gallery/wine.webp",
   },
   manifesto: {
     headline: "No inventamos la pasta. Honramos el tiempo de la harina.",
