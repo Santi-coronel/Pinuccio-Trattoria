@@ -91,7 +91,7 @@ export const TextReveal: React.FC<TextRevealProps> = ({
       {words.map((w, i) => (
         <span
           key={i}
-          className="inline-flex overflow-hidden pb-[0.14em] -mb-[0.14em] align-baseline"
+          className="inline-flex overflow-hidden pb-[0.2em] -mb-[0.2em] align-baseline"
         >
           <motion.span variants={word} className="inline-block will-change-transform">
             {w}

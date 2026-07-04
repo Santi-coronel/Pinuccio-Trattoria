@@ -1,47 +1,44 @@
 import React from "react";
 import { PINUCCIO_DATA, getWhatsAppReservationUrl } from "../content/pinuccio";
+import { TextReveal } from "./motionPrimitives";
 import { ArrowUpRight, Instagram, MessageCircle, Heart } from "lucide-react";
 
-interface FooterProps {
-  onOpenReservation: () => void;
-}
+export const Footer: React.FC<{ onOpenReservation: () => void }> = ({ onOpenReservation }) => {
+  const { openingHours, contact } = PINUCCIO_DATA;
 
-export const Footer: React.FC<FooterProps> = ({ onOpenReservation }) => {
   return (
-    <footer className="bg-[#1C1A17] text-[#F8F5EE] pt-20 pb-12 border-t border-[#1C1A17] relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 relative z-10">
-        
-        {/* Top Invitation Banner */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-16 border-b border-[#F8F5EE]/15 items-center">
-          <div className="lg:col-span-8 space-y-4">
-            <span className="font-mono text-xs tracking-widest uppercase text-[#C24E2B] block font-semibold">
-              Te Esperamos en el Mercado
-            </span>
-            <h2 className="font-editorial text-4xl sm:text-6xl font-bold text-[#F8F5EE] leading-tight tracking-tight">
-              Sentate en la barra. Pedí una jarra de vino. Disfrutá de la pasta fresca.
-            </h2>
+    <footer className="relative bg-ink text-paper overflow-hidden">
+      <div className="absolute inset-0 paper-grain opacity-60 pointer-events-none" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 pt-20 pb-10">
+        {/* CTA banner */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 pb-16 border-b border-paper/15 items-center">
+          <div className="lg:col-span-8">
+            <span className="eyebrow text-ochre">Te esperamos en el mercado</span>
+            <TextReveal
+              as="h2"
+              text="Sentate en la barra. Pedí una jarra de vino. Disfrutá la pasta fresca."
+              className="font-display text-3xl sm:text-5xl font-semibold text-paper leading-[1.05] tracking-[-0.01em] mt-4 max-w-[20ch]"
+            />
           </div>
 
-          <div className="lg:col-span-4 flex flex-col items-start lg:items-end justify-center font-mono text-xs uppercase tracking-widest">
+          <div className="lg:col-span-4 lg:flex lg:justify-end">
             <button
               onClick={onOpenReservation}
-              className="bg-[#25D366] text-white px-8 py-4 hover:bg-[#1ebd59] transition-colors flex items-center gap-3 shadow-md w-full sm:w-auto justify-center font-bold border border-[#25D366]"
+              className="group w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-terracotta text-paper px-8 py-4 hover:bg-terracotta-dark transition-colors font-mono text-xs tracking-[0.18em] uppercase"
             >
-              <MessageCircle className="w-4 h-4 fill-white" />
-              <span>Reservar por WhatsApp</span>
+              <MessageCircle className="w-4 h-4" />
+              Reservar por WhatsApp
+              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </button>
           </div>
         </div>
 
-        {/* Links & Details Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 py-16 border-b border-[#F8F5EE]/15 text-xs font-sans">
-          
-          {/* Col 1: Location */}
+        {/* Detalles */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 py-16 border-b border-paper/15">
           <div className="space-y-3">
-            <h3 className="font-mono text-[11px] uppercase tracking-widest text-[#5B6343] font-semibold">
-              Ubicación
-            </h3>
-            <p className="text-[#F8F5EE]/90 leading-relaxed font-medium">
+            <h3 className="eyebrow text-paper/50">Ubicación</h3>
+            <p className="text-sm text-paper/90 leading-relaxed">
               {PINUCCIO_DATA.marketName}
               <br />
               {PINUCCIO_DATA.address}
@@ -52,45 +49,36 @@ export const Footer: React.FC<FooterProps> = ({ onOpenReservation }) => {
               href={PINUCCIO_DATA.googleMapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[#C24E2B] hover:underline pt-1 font-mono uppercase text-[10px] tracking-wider"
+              className="inline-flex items-center gap-1 text-ochre hover:text-terracotta transition-colors eyebrow pt-1"
             >
-              <span>Ver Mapa en Google</span>
-              <ArrowUpRight className="w-3 h-3" />
+              Ver mapa <ArrowUpRight className="w-3 h-3" />
             </a>
           </div>
 
-          {/* Col 2: Hours */}
           <div className="space-y-3">
-            <h3 className="font-mono text-[11px] uppercase tracking-widest text-[#5B6343] font-semibold">
-              Horarios de Atención
-            </h3>
-            <p className="text-[#F8F5EE]/90 leading-relaxed">
-              <span className="font-semibold">{PINUCCIO_DATA.openingHours.days}</span>
+            <h3 className="eyebrow text-paper/50">Horarios</h3>
+            <p className="text-sm text-paper/90 leading-relaxed">
+              <span className="font-semibold">{openingHours.days}</span>
               <br />
-              Almuerzo: {PINUCCIO_DATA.openingHours.lunch}
+              Almuerzo · {openingHours.lunch}
               <br />
-              Cena: {PINUCCIO_DATA.openingHours.dinner}
+              Cena · {openingHours.dinner}
             </p>
-            <span className="text-[10px] text-[#F8F5EE]/60 block font-mono">
-              {PINUCCIO_DATA.openingHours.notes}
-            </span>
+            <span className="text-xs text-paper/55 block leading-relaxed">{openingHours.notes}</span>
           </div>
 
-          {/* Col 3: Social & Contact */}
           <div className="space-y-3">
-            <h3 className="font-mono text-[11px] uppercase tracking-widest text-[#5B6343] font-semibold">
-              Contacto & Redes
-            </h3>
-            <ul className="space-y-2">
+            <h3 className="eyebrow text-paper/50">Contacto & redes</h3>
+            <ul className="space-y-2.5 text-sm">
               <li>
                 <a
                   href={PINUCCIO_DATA.instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[#F8F5EE]/90 hover:text-[#C24E2B] transition-colors"
+                  className="inline-flex items-center gap-2.5 text-paper/90 hover:text-ochre transition-colors"
                 >
-                  <Instagram className="w-4 h-4 text-[#C24E2B]" />
-                  <span>@pinucciobelgrano</span>
+                  <Instagram className="w-4 h-4 text-ochre" />
+                  @pinucciobelgrano
                 </a>
               </li>
               <li>
@@ -98,42 +86,39 @@ export const Footer: React.FC<FooterProps> = ({ onOpenReservation }) => {
                   href={getWhatsAppReservationUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[#F8F5EE]/90 hover:text-[#25D366] transition-colors"
+                  className="inline-flex items-center gap-2.5 text-paper/90 hover:text-ochre transition-colors"
                 >
-                  <MessageCircle className="w-4 h-4 text-[#25D366] fill-[#25D366]" />
-                  <span>Reservas por WhatsApp</span>
+                  <MessageCircle className="w-4 h-4 text-ochre" />
+                  {contact.formattedPhone}
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: Philosophy Note */}
           <div className="space-y-3">
-            <h3 className="font-mono text-[11px] uppercase tracking-widest text-[#5B6343] font-semibold">
-              Filosofía Pinuccio
-            </h3>
-            <p className="text-[#F8F5EE]/70 leading-relaxed italic font-serif text-sm">
-              "Pastificio artesanal de mercado. Harina pura, huevo de campo y la alegría de comer juntos."
+            <h3 className="eyebrow text-paper/50">Filosofía</h3>
+            <p className="font-serif italic text-base text-paper/75 leading-relaxed">
+              “Pastificio artesanal de mercado. Harina pura, huevo de campo y la alegría
+              de comer juntos.”
             </p>
           </div>
-
         </div>
 
-        {/* Massive Footer Display Brand Name */}
-        <div className="pt-12 pb-6 text-center">
-          <h1 className="font-editorial text-[14vw] sm:text-[13vw] font-bold tracking-tighter leading-none text-[#F8F5EE]/10 select-none">
+        {/* Watermark */}
+        <div className="pt-12 pb-4 text-center overflow-hidden">
+          <span className="font-display font-semibold tracking-[-0.03em] leading-none text-[15vw] text-paper/[0.07] select-none block">
             PINUCCIO
-          </h1>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-[#F8F5EE]/10 text-[11px] font-mono text-[#F8F5EE]/60">
-          <span>© {new Date().getFullYear()} PINUCCIO TRATTORIA E PASTIFICIO. Todos los derechos reservados.</span>
-          <span className="flex items-center gap-1">
-            Fatto a mano con <Heart className="w-3 h-3 text-[#C24E2B] fill-[#C24E2B]" /> en el Mercado de Belgrano, Buenos Aires
           </span>
         </div>
 
+        {/* Bottom bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-paper/10 font-mono text-[11px] text-paper/55">
+          <span>© {new Date().getFullYear()} Pinuccio Trattoria e Pastificio</span>
+          <span className="inline-flex items-center gap-1.5">
+            Fatto a mano con <Heart className="w-3 h-3 text-terracotta fill-terracotta" /> en el
+            Mercado de Belgrano
+          </span>
+        </div>
       </div>
     </footer>
   );

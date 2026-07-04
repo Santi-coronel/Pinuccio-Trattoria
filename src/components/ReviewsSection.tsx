@@ -1,71 +1,80 @@
 import React from "react";
-import { motion } from "motion/react";
-import { REVIEWS_DATA } from "../content/reviews";
-import { Star, Quote, MessageSquare } from "lucide-react";
-import { oliveOilEase } from "../lib/animations";
+import { REVIEWS_DATA, ReviewItem } from "../content/reviews";
+import { Star, Quote } from "lucide-react";
+import { Reveal } from "./motionPrimitives";
+
+const Stars: React.FC<{ n: number }> = ({ n }) => (
+  <div className="flex items-center gap-0.5 text-terracotta" aria-label={`${n} de 5`}>
+    {Array.from({ length: n }).map((_, i) => (
+      <Star key={i} className="w-3.5 h-3.5 fill-terracotta" />
+    ))}
+  </div>
+);
+
+const Meta: React.FC<{ rev: ReviewItem }> = ({ rev }) => (
+  <div className="flex items-center justify-between gap-3 pt-5 mt-5 border-t border-ink/10">
+    <div>
+      <span className="font-sans font-semibold text-ink text-sm block">{rev.author}</span>
+      <span className="eyebrow text-ink-faint block mt-0.5">{rev.role}</span>
+    </div>
+    <span className="eyebrow text-terracotta border border-terracotta/25 bg-terracotta/8 px-2.5 py-1 shrink-0">
+      {rev.source}
+    </span>
+  </div>
+);
 
 export const ReviewsSection: React.FC = () => {
+  const [lead, ...rest] = REVIEWS_DATA;
+
   return (
-    <section className="py-24 border-b border-[#1C1A17]/15 bg-[#FAF8F2] relative">
+    <section className="relative bg-paper py-24 sm:py-28 border-t border-ink/10">
       <div className="absolute inset-0 paper-grain pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 relative z-10">
-        
-        {/* Section Title */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 font-mono text-xs tracking-widest uppercase text-[#5B6343] mb-3">
-            <Quote className="w-3.5 h-3.5 text-[#C24E2B]" />
-            <span>Voces del Mercado</span>
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
+          <div>
+            <span className="eyebrow rule-tick text-olive">Voces del mercado</span>
+            <h2 className="font-display text-4xl sm:text-5xl font-semibold text-ink tracking-[-0.02em] mt-4 leading-[1.02]">
+              Lo que dicen quienes
+              <br className="hidden sm:block" /> nos visitan
+            </h2>
           </div>
-
-          <h2 className="font-editorial text-4xl sm:text-5xl font-bold text-[#1C1A17] tracking-tight">
-            Lo Que Dicen Quienes Nos Visitan
-          </h2>
+          <div className="flex items-center gap-3 text-ink-soft">
+            <Stars n={5} />
+            <span className="font-mono text-xs tracking-[0.14em] uppercase">
+              5,0 · Google Maps
+            </span>
+          </div>
         </div>
 
-        {/* Reviews Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {REVIEWS_DATA.map((rev, idx) => (
-            <motion.div
-              key={rev.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.0, delay: idx * 0.2, ease: oliveOilEase }}
-              className="p-8 bg-[#F8F5EE] border border-[#1C1A17]/15 flex flex-col justify-between shadow-sm hover:border-[#C24E2B]/40 transition-colors"
-            >
-              <div>
-                {/* Rating Stars */}
-                <div className="flex items-center gap-1 text-[#C24E2B] mb-6">
-                  {[...Array(rev.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-[#C24E2B]" />
-                  ))}
-                </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+          {/* Reseña destacada */}
+          <Reveal className="lg:col-span-7">
+            <figure className="relative h-full bg-cream border border-ink/12 p-8 sm:p-10 flex flex-col">
+              <Quote className="w-9 h-9 text-terracotta/30 mb-5" />
+              <Stars n={lead.rating} />
+              <blockquote className="font-serif text-2xl sm:text-3xl italic text-ink leading-snug mt-5 mb-auto">
+                “{lead.content}”
+              </blockquote>
+              <Meta rev={lead} />
+            </figure>
+          </Reveal>
 
-                {/* Review Quote */}
-                <p className="font-serif italic text-lg text-[#1C1A17]/90 leading-relaxed mb-6">
-                  "{rev.content}"
-                </p>
-              </div>
-
-              <div className="pt-6 border-t border-[#1C1A17]/10 flex items-center justify-between font-mono text-xs">
-                <div>
-                  <span className="font-semibold text-[#1C1A17] block font-sans">
-                    {rev.author}
-                  </span>
-                  <span className="text-[10px] text-[#5B6343] block mt-0.5">
-                    {rev.role}
-                  </span>
-                </div>
-
-                <span className="text-[10px] uppercase tracking-wider text-[#C24E2B] bg-[#C24E2B]/10 px-2.5 py-1 border border-[#C24E2B]/20">
-                  {rev.source}
-                </span>
-              </div>
-            </motion.div>
-          ))}
+          {/* Reseñas secundarias */}
+          <div className="lg:col-span-5 flex flex-col gap-6 lg:gap-8">
+            {rest.map((rev, idx) => (
+              <Reveal key={rev.id} delay={0.1 + idx * 0.08} className="flex-1">
+                <figure className="h-full bg-cream border border-ink/12 p-6 sm:p-7 flex flex-col hover:border-terracotta/40 transition-colors">
+                  <Stars n={rev.rating} />
+                  <blockquote className="font-serif text-lg italic text-ink/90 leading-relaxed mt-4 mb-auto">
+                    “{rev.content}”
+                  </blockquote>
+                  <Meta rev={rev} />
+                </figure>
+              </Reveal>
+            ))}
+          </div>
         </div>
-
       </div>
     </section>
   );
