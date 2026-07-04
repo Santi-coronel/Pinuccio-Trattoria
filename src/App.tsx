@@ -15,7 +15,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F5EE] text-[#1C1A17] font-sans selection:bg-[#C24E2B] selection:text-[#F8F5EE] relative overflow-x-hidden paper-grain">
+    <div className="min-h-screen bg-paper text-ink font-sans relative overflow-x-hidden paper-grain">
       {/* Navigation Header */}
       <Navbar onOpenReservation={() => handleOpenReservation()} />
 

@@ -1,64 +1,155 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   Pinuccio — Design tokens
+   "Pastificio editorial de mercado": papel cálido, tinta, cotto y aceite de
+   oliva. Paleta derivada del mundo trattoria (sin cliché bandera italiana).
+   ========================================================================== */
 @theme {
-  --font-serif: "Cormorant Garamond", "Bodoni Moda", "Playfair Display", Georgia, serif;
-  --font-display: "Bodoni Moda", "Cormorant Garamond", Georgia, serif;
+  /* Type — display con carácter (Fraunces) + serif de acento + sans + mono */
+  --font-display: "Fraunces", "Playfair Display", Georgia, serif;
+  --font-serif: "Cormorant Garamond", Georgia, serif;
   --font-sans: "Manrope", system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-  --color-paper: #F8F5EE;
-  --color-paper-light: #FAF8F2;
-  --color-paper-dark: #EFEAE0;
-  --color-charcoal: #1C1A17;
-  --color-charcoal-muted: #4A4640;
-  --color-terracotta: #C24E2B;
-  --color-terracotta-dark: #9E3A1D;
-  --color-olive: #5B6343;
-  --color-olive-dark: #40462D;
+  /* Papel (fondos cálidos) */
+  --color-paper: #F4EFE4;
+  --color-paper-2: #EAE3D3;
+  --color-paper-3: #E1D7C2;
+  --color-cream: #FBF8F0;
+
+  /* Tinta (texto + secciones oscuras) */
+  --color-ink: #211E1A;
+  --color-ink-soft: #4A443B;
+  --color-ink-faint: #6E675C;
+
+  /* Acentos de trattoria */
+  --color-terracotta: #B8442B;
+  --color-terracotta-dark: #8F3016;
+  --color-olive: #4C5330;
+  --color-olive-dark: #333A20;
   --color-ochre: #C8832C;
+  --color-bordeaux: #5E2530;
+  --color-bordeaux-dark: #451A22;
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: var(--color-paper);
-    color: var(--color-charcoal);
+    color: var(--color-ink);
     font-family: var(--font-sans);
     line-height: 1.6;
     letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
   }
 
   h1, h2, h3, .font-editorial {
-    font-family: var(--font-serif);
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
   }
 
-  /* Paper grain overlay */
-  .paper-grain {
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+  ::selection {
+    background: var(--color-terracotta);
+    color: var(--color-paper);
   }
 
-  /* Print hairline borders */
-  .border-print {
-    border-color: rgba(28, 26, 23, 0.15);
-  }
-
-  /* Smooth olive oil motion transitions */
   * {
-    border-color: rgba(28, 26, 23, 0.12);
+    border-color: color-mix(in oklab, var(--color-ink) 12%, transparent);
   }
 }
 
-/* Custom scrollbar for editorial feel */
+@layer components {
+  /* Eyebrow tipo ticket de mercado (mono, tracked) */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-olive);
+  }
+
+  /* Filete editorial (línea + eyebrow) */
+  .rule-tick::before {
+    content: "";
+    display: inline-block;
+    width: 2rem;
+    height: 1px;
+    margin-right: 0.75rem;
+    vertical-align: middle;
+    background: currentColor;
+    opacity: 0.6;
+  }
+}
+
+/* ==========================================================================
+   Texturas (técnica adaptada de cult-ui / texture-overlay — CSS puro)
+   ========================================================================== */
+
+/* Grano de papel fino sobre feTurbulence */
+.paper-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+/* Crosshatch tenue para bandas / divisores */
+.tx-crosshatch {
+  background-image:
+    repeating-linear-gradient(45deg, transparent, transparent 3px, color-mix(in oklab, var(--color-ink) 100%, transparent) 3px, transparent 4px),
+    repeating-linear-gradient(-45deg, transparent, transparent 3px, color-mix(in oklab, var(--color-ink) 100%, transparent) 3px, transparent 4px);
+  opacity: 0.05;
+}
+
+/* Líneas diagonales finas (papel de estraza) */
+.tx-diagonal {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    color-mix(in oklab, var(--color-ink) 100%, transparent) 0,
+    color-mix(in oklab, var(--color-ink) 100%, transparent) 1px,
+    transparent 1px,
+    transparent 7px
+  );
+  opacity: 0.045;
+}
+
+/* Divisor punteado tipo receta impresa */
+.rule-dotted {
+  background-image: radial-gradient(circle at 1px 1px, color-mix(in oklab, var(--color-ink) 45%, transparent) 1px, transparent 0);
+  background-size: 6px 2px;
+  background-repeat: repeat-x;
+  height: 2px;
+}
+
+/* Máscara de borde difuminado (técnica edge-blur, versión CSS gradient) */
+.mask-fade-b {
+  -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent);
+  mask-image: linear-gradient(to bottom, black 55%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ==========================================================================
+   Scrollbar editorial
+   ========================================================================== */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: #F8F5EE;
+  background: var(--color-paper);
 }
 ::-webkit-scrollbar-thumb {
-  background: #C24E2B;
-  border-radius: 0px;
+  background: var(--color-terracotta);
+  border-radius: 0;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #9E3A1D;
+  background: var(--color-terracotta-dark);
 }
